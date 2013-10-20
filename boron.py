@@ -64,8 +64,8 @@ class Parade:
                 # an ancestor node has lead us back 
                 # to it, so we must have a loop
                 if node.color == 1:
-                        print "Graph is not a DAG"
-                        sys.exit(1)
+                        raise ParadeError("Illegal request file!")
+
 
                 node.color = 1
 
@@ -87,7 +87,6 @@ class Parade:
                 fin = open(fname)
 
                 for line in fin:
-                        print line
                         # strip newline from the input.
                         line = line.rstrip()
                         # Now split apart the line.  
@@ -126,8 +125,14 @@ def main(argv=None):
 
         parade = Parade()
         parade.input(argv[1])
-        parade.printGraph()
-        parade.sort()
+        #parade.printGraph()
+
+        try:
+                parade.sort()
+        except ParadeError as e:
+                print e
+                return
+
         parade.output()
 
 
