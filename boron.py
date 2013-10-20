@@ -33,15 +33,46 @@ class Parade:
 		self.ordering = []
 
 	def printGraph(self):
-		for i in self.graph.keys():
-			print "%s must come after:" % (i)
-			for j in self.graph[i].predArr:
-				print j.name
+		for key in self.graph.keys():
+			print "%s must come after:" % (key)
+			for node in self.graph[key].predArr:
+				print node.name
 
 			print
 
 	def sort(self):
-		print 
+		for key in self.graph.keys():
+			if  self.graph[key].color == 0:
+				self.__visit__(self.graph[key])
+
+	def __visit__(self, node):
+		# This node is already sorted
+		if node.color == 2:
+			return
+
+		# This node is already visited, and 
+		# an ancestor node has lead us back 
+		# to it, so we must have a loop
+		if node.color == 1:
+			print "Graph is not a DAG"
+			sys.exit(1)
+
+		node.color = 1
+
+		# Visit predecessors
+		for predecessor in node.predArr:
+			self.__visit__(predecessor)
+
+		# Now all predecessors must be
+		# in the ordering, so this node
+		# can be be added.
+		node.color = 2
+		#self.ordering.insert(0,node)
+		self.ordering.append(node)
+		
+	def output(self):
+		for node in self.ordering:
+			print node.name
 
 	def input(self,fname):
 		fin = open(fname)
@@ -87,6 +118,7 @@ def main(argv=None):
 	parade.input(argv[1])
 	parade.printGraph()
 	parade.sort()
+	parade.output()
 
         # parse command line arguments
         #try:
